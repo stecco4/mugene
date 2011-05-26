@@ -125,9 +125,9 @@ end
 
 test = Note.new(60) #A5
 scale = PentatonicScale.new(62) # d pentatonic
-print "#{scale}\n"
-print "#{scale.n_notes_higher(test,2)}\n"
-print "#{(test+Note.new(30)) > test}\n"
+#print "#{scale}\n"
+#print "#{scale.n_notes_higher(test,2)}\n"
+#print "#{(test+Note.new(30)) > test}\n"
 
 
 
