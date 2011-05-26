@@ -9,21 +9,16 @@ public class SimpleNotePlayer{
 	   static Receiver rcvr;
 		static long timeStamp = -1;
 		static ShortMessage myMsg = new ShortMessage();
-		static int v = 93; //velocity of note
-		static int baseNote = 60;
-		static int option = 0, i = 0, channel = 0;
-		static int transpositionFactor = 0;
-		static int shiftDisplacement = 12;
-		static char c = 0;
-		static char[] layout = new char[32];
+		static int i = 0, channel = 0;
+		//static int transpositionFactor = 0;
 		static ArrayList<Integer> notesPlaying = new ArrayList<Integer>(); 
 	
 	
-	public static void playNote(int midiNoteValue){	
+	public static void playNote(int midiNoteValue, int velocity){	
 		//check if the note is playing and play the noteplay note
 		if( midiNoteValue != -1 && notesPlaying.indexOf(midiNoteValue) == -1){ 
 			try{
-				myMsg.setMessage(ShortMessage.NOTE_ON, channel, midiNoteValue + transpositionFactor, v);
+				myMsg.setMessage(ShortMessage.NOTE_ON, channel, midiNoteValue/* + transpositionFactor*/, velocity);
 				
 				//add note to arraylist
 				notesPlaying.add(midiNoteValue);
@@ -37,10 +32,10 @@ public class SimpleNotePlayer{
 	}
 	
 	
-	public static void stopPlayingNote(int midiNoteValue){
+	public static void stopPlayingNote(int midiNoteValue, int velocity){
 		if( midiNoteValue != -1){ 
 			try{
-				myMsg.setMessage(ShortMessage.NOTE_OFF, channel, midiNoteValue + transpositionFactor, v);
+				myMsg.setMessage(ShortMessage.NOTE_OFF, channel, midiNoteValue/* + transpositionFactor*/, velocity);
 				
 				//remove the note from arraylist
 				int index = notesPlaying.indexOf(midiNoteValue);
@@ -83,12 +78,12 @@ public class SimpleNotePlayer{
 		while( scn.hasNextInt() ){
 			temp = scn.nextInt();
 			duration = scn.nextInt();
-			playNote(temp);
+			playNote(temp, 93);
 			
 			// 3000 is pause for a minute / quarter note duration
 	 		try{Thread.sleep( (30000/tempo)*duration );}catch(Exception e){;}; 
 			
-			stopPlayingNote(temp);
+			stopPlayingNote(temp, 93);
 		}
 	
 
