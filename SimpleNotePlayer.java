@@ -59,15 +59,35 @@ public class SimpleNotePlayer{
 	public static void main(String[] args) throws InvalidMidiDataException, MidiUnavailableException{	
 	
 		Scanner scn = new Scanner(System.in);
-		//TO_DO make args affect playback speed
+		int tempo = 120;
+		int i;
+		
+		//look for -t command-line argument to change the tempo
+		if(args != null && args.length > 0){
+			i = Arrays.binarySearch(args, "-t");
+			if( i >= 0 ){
+				if(i <= args.length - 2){
+					tempo = Integer.parseInt(args[i+1]);
+				}
+				else{
+					System.err.println("No arguement was given after -t\n");
+				}
+			}
+		}
+		
 		
 		rcvr = MidiSystem.getReceiver();
 		
-		int temp;
+		int temp; int duration;
+		
 		while( scn.hasNextInt() ){
 			temp = scn.nextInt();
+			duration = scn.nextInt();
 			playNote(temp);
-	 		try{Thread.sleep(800);}catch(Exception e){;};
+			
+			// 3000 is pause for a minute / quarter note duration
+	 		try{Thread.sleep( (30000/tempo)*duration );}catch(Exception e){;}; 
+			
 			stopPlayingNote(temp);
 		}
 	
