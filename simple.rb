@@ -10,6 +10,10 @@ class ProbabilityMatrix
 				@matrix[[i, k]] = 0
 			end
 		end
+
+		fill
+
+		self
 	end
 
 	# Fills the matrix with probability values
@@ -70,12 +74,43 @@ class ProbabilityMatrix
 		@items.length.times do |i|
 			next if @matrix[[item_index, i]] == 0
 
-			if r <= s + @matrix[[item_index, i]] and r > s
+			if r < s + @matrix[[item_index, i]] and r >= s
+				puts @items[i]
 				return @items[i]
 			end
 
 			s += @matrix[[item_index, i]]
 		end
+
+		puts "here"
+		puts r
+		puts item
+		#return @items[@items.length - 1]
+	end
+
+	def set_row(item, value)
+		item_index = @items.index(item)
+		@items.length.times do |i|
+			@matrix[[item_index, i]] = value
+		end
+	end
+
+	def set_column(item, value)
+		item_index = @items.index(item)
+		@items.length.times do |i|
+			@matrix[[i, item_index]] = value
+		end
+	end
+end
+
+class Rhythm
+	WHOLE_NOTE = 12
+	HALF_NOTE = 6
+	QUARTER_NOTE = 2
+	EIGHTH_NOTE = 1
+
+	def self.as_array
+		[WHOLE_NOTE, HALF_NOTE, QUARTER_NOTE, EIGHTH_NOTE]
 	end
 end
 
@@ -83,11 +118,16 @@ bottom_notes = PentatonicScale.new(39).scale.map { |x| x + 38 }.sort
 
 notes = bottom_notes + bottom_notes.map { |x| x + 12 } + bottom_notes.map { |x| x + 24 }
 
-pmatrix = ProbabilityMatrix.new(notes)
-pmatrix.fill
+note_matrix = ProbabilityMatrix.new(notes)
 
-current = 39
+rhythm_matrix = ProbabilityMatrix.new(Rhythm::as_array())
+rhythm_matrix.set_column(Rhythm::WHOLE_NOTE, 0)
+
+current_note = 39
+current_rhythm = Rhythm::QUARTER_NOTE
 10.times do
-	puts current
-	current = pmatrix.get_next(current)
+	puts current_note
+	puts current_rhythm
+	current_note = note_matrix.get_next(current_note)
+	current_rhythm = rhythm_matrix.get_next(current_rhythm)
 end
