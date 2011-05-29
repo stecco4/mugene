@@ -118,16 +118,95 @@ class PentatonicScale
 		
 	end
 	
+	# get the pitch class of scale degree n (the first pitch of the scale is scale degree one)
+	def scaleDegree(degree)
+		if degree == 0
+			print "there is no scale degree 0\n"
+			return nil
+		else
+			return scale[degree]
+		end
+	end
+	
+end
+
+
+# scale constants that may be passes to scale class
+$major_scale = [0,2,4,5,7,9,11]
+$Aolean_scale = [0,2,3,5,7,8,10]
+$harmonic_minor_scale = [0,2,3,5,7,8,11]
+
+# class to hold any scale that repeates every octave
+class Scale 
+	
+	def initialize(pitch, scale)
+	
+		if scale.is_a?(Array)
+			@scale = scale
+		else
+			print "the second argument of initalize must be of type Array\n"
+			return
+		end
+		
+		if pitch.is_a?(Fixnum)
+			tmp = pitch % 12
+			
+			for i in 0..(scale.size - 1)
+				@scale[i] = (@scale[i] + tmp ) % 12
+			end
+		elsif pitch.is_a?(Note)
+			tmp = pitch.pitch_class
+			for i in 0..(scale.size - 1) 
+				@scale[i] = (@scale[i] + tmp) % 12
+			end
+		end
+	end
+	
+	attr_reader :scale
+	
+	def to_s
+		return "[#{scale.join(", ")}]"
+	end
+	
+	# get the pitch n scale degrees higher than the given pitch (n may be negative)
+	def n_notes_higher(note, how_many)
+		#find where the note falls in the scale
+		i = scale.index note.pitch_class
+		if i == nil
+			print "#{note.midi_number} is not in this scale: #{self}\n"
+			return nil
+		end
+		
+		if how_many >=0
+			return Note.new(note.midi_number + ( 12 + scale[ (i+how_many) % scale.size ] - scale[i]) % 12 )
+		else
+			tmp = note.midi_number + scale[ (i+how_many) ] - scale[i]
+			while tmp > note.midi_number
+				tmp -= 12
+			end
+			return Note.new(tmp)
+		end
+		
+	end
+	
+	# get the pitch class of scale degree n (the first pitch of the scale is scale degree one)
+	def scaleDegree(degree)
+		if degree == 0
+			print "there is no scale degree 0\n"
+			return nil
+		elsif degree > 0
+			return scale[degree - 1]
+		else 
+			return scale[degree]
+		end
+	end
+
+	
 end
 
 
 
 
-test = Note.new(60) #A5
-scale = PentatonicScale.new(62) # d pentatonic
-#print "#{scale}\n"
-#print "#{scale.n_notes_higher(test,2)}\n"
-#print "#{(test+Note.new(30)) > test}\n"
 
 
 
