@@ -1,0 +1,11 @@
+About mugene:
+
+
+Requirements:
+	Ruby 1.8
+	java
+
+Usage:
+
+
+"ruby simple.rb | java SimpleNotePlayer" (command-line)
